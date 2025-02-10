@@ -17,7 +17,6 @@ load_dotenv()
 
 # Obtener la clave API desde las variables de entorno
 stock_api = os.getenv("STOCKS_API_KEY")
-print(f"API Key: {stock_api}")
 
 # Verificar si es fin de semana (sábado=5, domingo=6)
 if weekday == 5 or weekday == 6:  # Sábado o Domingo
