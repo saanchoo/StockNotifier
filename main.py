@@ -1,24 +1,20 @@
-STOCK = "TSLA"
-COMPANY_NAME = "Tesla Inc"
+from stocksAPI import get_stock_change
+from newsAPI import get_news
+from whatsapp import send_whatsapp_message
 
-## STEP 1: Use https://www.alphavantage.co
-# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
+STOCK = "BTC"
+COMPANY_NAME = "Bitcoin"
 
-## STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
+# Obtenemos el cambio del Bitcoin
+stock_change, up_down = get_stock_change(STOCK)
 
-## STEP 3: Use https://www.twilio.com
-# Send a seperate message with the percentage change and each article's title and description to your phone number. 
-
-
-#Optional: Format the SMS message like this: 
-"""
-TSLA: 🔺2%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-or
-"TSLA: 🔻5%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-"""
-
+# Si la variación es >= 5%, obtenemos noticias y enviamos WhatsApp
+if abs(stock_change) >= 5:
+    articles = get_news(COMPANY_NAME)
+    for article in articles:
+        message = f"{STOCK}: {up_down}{abs(stock_change)}%\n"
+        message += f"Headline: {article['title']}\nBrief: {article['description']}"
+        send_whatsapp_message(message)
+        print("✅ Mensaje enviado.")
+else:
+    print(f"📉 La variación de {STOCK} es menor al 1% ({stock_change}%). No se envían noticias.")
